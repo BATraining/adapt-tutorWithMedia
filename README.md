@@ -1,1 +1,12 @@
-# adapt-tutor-withMedia
+#adapt-tutor-withMedia
+
+
+An Adapt core contributed extension which is passed some feedback data and displays a basic overlay for question components with media.
+
+##Installation
+
+First, be sure to install the [Adapt Command Line Interface](https://github.com/adaptlearning/adapt-cli), then from the command line run:-
+
+        adapt install adapt-tutor-withMedia
+
+
