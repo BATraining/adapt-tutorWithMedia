@@ -3,15 +3,16 @@
     <div class="tutor-content">
         <div class="tutor-inner">
             {{#if feedbackTitle}}
-                <div class="tutor-title">
-                    <div class="tutor-title-inner accessible-text-block h5" role="heading" aria-level="1" tabindex="0">
-                        {{{feedbackTitle}}}
-                    </div>
+            <div class="tutor-title">
+                <div class="tutor-title-inner accessible-text-block h5" role="heading" aria-level="1" tabindex="0">
+                    {{{feedbackTitle}}}
                 </div>
+            </div>
             {{/if}}
             <div class="tutor-body">
                 <div class="tutor-body-inner">{{{a11y_text feedbackMessage}}}</div>
             </div>
+            {{#if shouldShowMedia}}
             {{#if _feedback._graphic}}
             <div class="tutor-graphic">
                 <img src={{_feedback._graphic.src}} alt="{{_feedback._graphic.alt}}"/>
@@ -21,13 +22,14 @@
             <div class="tutor-media">
                 <video class="media" preload="none" width="640px" height="360px" poster="{{_feedback._media.poster}}" style="width:100%; height:100%;">
                     {{#if _feedback._media.source}}
-                        <source src="{{_feedback._media.source}}" type="{{_feedback._media.type}}"/>
+                    <source src="{{_feedback._media.source}}" type="{{_feedback._media.type}}"/>
                     {{else}}
-                        <source src="{{_feedback._media.mp4}}" type="video/mp4"/>
-                        <source src="{{_feedback._media.ogv}}" type="video/ogg"/>
+                    <source src="{{_feedback._media.mp4}}" type="video/mp4"/>
+                    <source src="{{_feedback._media.ogv}}" type="video/ogg"/>
                     {{/if}}
                 </video>
             </div>
+            {{/if}}
             {{/if}}
             {{/if}}
         </div>
