@@ -16,9 +16,14 @@ define(function(require) {
         className: "extension-tutor-withMedia",
 
         initialize: function() {
+            if (this.model.get('_attemptsLeft') === 0 || this.model.get('_isCorrect')) {
+                this.model.set('shouldShowMedia', true);
+            } else {
+                this.model.set('shouldShowMedia', false);
+            }
             this.render();
             this.listenTo(Adapt, 'remove', this.closeTutor, this);
-            this.listenTo(Adapt, 'device:resize', _.debounce(this.resetTutorSize, 100));
+            this.listenTo(Adapt, 'device:resize', _.debounce(this.resetTutorSize, 400));
         },
 
         events: {
@@ -32,33 +37,36 @@ define(function(require) {
             this.$el.html(template(data)).appendTo('#wrapper');
             this.$('.tutor').css({display: 'block', opacity: 0});
 
-            _.defer(_.bind(function() {
-                this.showTutor();
-                this.postRender();
-            }, this));
+            if(this.model.get('shouldShowMedia') && this.model.get('_feedback')._graphic) {
+                this.$('.tutor-graphic').imageready(_.bind(function() {
+                    _.defer(_.bind(function() {
+                        this.showTutor();
+                        this.postRender();
+                    }, this));
+                }, this));
+            } else {
+                _.defer(_.bind(function() {
+                    this.showTutor();
+                    this.postRender();
+                }, this));
+            }
 
             return this;
         },
 
         postRender: function() {
             $(document).on('keyup', _.bind(this.onKeyUp, this));
-
             var feedback = this.model.get('_feedback');
-            if (feedback._graphic || feedback._media) {
-                this.$('.tutor-inner').addClass('have-media');
-
+            if (this.model.get('shouldShowMedia') && (feedback._graphic || feedback._media)) {
                 if(feedback._media) {
                     this.setupPlayer();
                 }
-            } else {
-                this.$('.tutor-inner').removeClass('have-media');
             }
         },
 
         setupPlayer: function() {
             this.model.set('_playerOptions', {});
             var modelOptions = this.model.get('_playerOptions');
-
             modelOptions.pluginPath = 'assets/';
             modelOptions.features = ['playpause','progress','current','duration'];
             modelOptions.success = _.bind(this.onPlayerReady, this);
@@ -75,8 +83,11 @@ define(function(require) {
             this.resizeTutor(true);
 
             var feedback = this.model.get('_feedback');
-            if(feedback._media) {
-                this.$('video').width(this.$('.tutor-media').width());
+
+            if(this.model.get('shouldShowMedia')) {
+                if(feedback._media) {
+                    this.$('video').width(this.$('.tutor-media').width());
+                }
             }
 
             if (Adapt.device.screenSize == 'large') {
@@ -84,9 +95,11 @@ define(function(require) {
             } else {
                 this.$('.tutor-inner').addClass('small-screen');
             }
+
         },
 
         resizeTutor: function(noAnimation) {
+
             var windowHeight = $(window).height();
             var tutorHeight = this.$('.tutor').height();
             var animationSpeed = 400;
@@ -108,7 +121,15 @@ define(function(require) {
                     'margin-top': -(tutorHeight / 2), 'opacity': 1
                 }, animationSpeed);
             }
+
+            if (Adapt.device.screenSize == 'large' && this.model.get('shouldShowMedia')) {
+                var width = this.$('.tutor-inner').width() - 595;
+                this.$('.tutor-body').width(width);
+            } else {
+                this.$('.tutor-body').css('width', '100%');
+            }
         },
+
 
         showTutor: function() {
             this.$('.tutor').show();
@@ -116,7 +137,7 @@ define(function(require) {
                 this.$el.a11y_focus();
             }, this));
 
-           _.defer(_.bind(function() {
+            _.defer(_.bind(function() {
                 this.resizeTutor();
             }, this));
         },
