@@ -35,10 +35,10 @@
         z-index: 550;
         .ie8 & {
             left:0px;
-		    .dir-rtl & {
-		        left: inherit;
-		        right: 0px;
-		    }
+            .dir-rtl & {
+                left: inherit;
+                right: 0px;
+            }
         }
         a {
             outline: none;
@@ -49,34 +49,42 @@
     .tutor-content {
         .responsive-layout
         .ie8 & {
-            max-width: @ie8-max-width;
+            max-width:@ie8-max-width;
             margin:0 auto;
         }
     }
 
     .tutor-inner {
         padding: @notify-popup-padding;
-        padding-top: 60px;
-
-        .tutor-graphic {
-            display:inline-block;
-            width:590px;
-            position:inherit;
-
-            .media {
-                width:100%;
-            }
-        }
+        padding-top:60px;
+        margin-right:5%;
 
         .tutor-body {
             display:inline-block;
             vertical-align: top;
+            word-break: break-word;
+
+            .tutor-body-inner {
+                margin-right:5%;
+            }
+        }
+
+        .tutor-graphic {
+            display:inline-block;
+            position:inherit;
+            width:590px;
+            margin-top:0;
+
+            .media-video {
+                width:100%;
+            }
         }
 
         .tutor-media {
             display:inline-block;
-            width:590px;
             position:inherit;
+            width:590px;
+            margin-top:0;
             overflow: hidden;
 
             .media {
@@ -100,15 +108,13 @@
                 display:block;
                 width:90%;
                 margin-top:10px;
-                position:inherit;
-                overflow: hidden;
             }
         }
     }
 
     .tutor-toolbar {
         text-align:right;
-        width: 100%;
+        width:100%;
         position:absolute;
         top:0;
         right:0;
@@ -132,17 +138,17 @@
     .tutor-shadow {
         display: none;
         position: fixed;
-        top: 0px;
-        left: 0px;
+        top:0px;
+        left:0px;
         .dir-rtl & {
             left: inherit;
             right: 0px;
         }
-        width: 100%;
-        height: 100%;
-        z-index: 549;
+        width:100%;
+        height:100%;
+        z-index:549;
         .no-opacity & {
-                background-image:@transparency-fallback-png;
+            background-image:@transparency-fallback-png;
         }
         background-color: @transparency;
     }

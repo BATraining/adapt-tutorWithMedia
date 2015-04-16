@@ -12,15 +12,15 @@
             <div class="tutor-body">
                 <div class="tutor-body-inner">{{{a11y_text feedbackMessage}}}</div>
             </div>
-            {{#if shouldShowMedia}}
+            {{#if canShowMedia}}
             {{#if _feedback._graphic}}
-            <div class="tutor-graphic">
-                <img src={{_feedback._graphic.src}} alt="{{_feedback._graphic.alt}}"/>
+            <div class="tutor-graphic media-container">
+                <img class="media-graphic" src={{_feedback._graphic.src}} alt="{{_feedback._graphic.alt}}"/>
             </div>
             {{else}}
             {{#if _feedback._media}}
-            <div class="tutor-media">
-                <video class="media" preload="none" width="640px" height="360px" poster="{{_feedback._media.poster}}" style="width:100%; height:100%;">
+            <div class="tutor-media media-container">
+                <video class="media-video" preload="none" width="640px" height="360px" poster="{{_feedback._media.poster}}" style="width:100%; height:100%;">
                     {{#if _feedback._media.source}}
                     <source src="{{_feedback._media.source}}" type="{{_feedback._media.type}}"/>
                     {{else}}
