@@ -16,15 +16,21 @@ define(function(require) {
         className: "extension-tutor-withMedia",
 
         initialize: function() {
+
+
+            this.updateFeedback();
+
+
             if (this.model.get('_attemptsLeft') === 0 || this.model.get('_isCorrect')) {
-                this.model.set('shouldShowMedia', true);
+                this.model.set('canShowMedia', true);
             } else {
-                this.model.set('shouldShowMedia', false);
+                this.model.set('canShowMedia', false);
             }
             this.render();
             this.listenTo(Adapt, 'remove', this.closeTutor, this);
-            this.listenTo(Adapt, 'device:resize', _.debounce(this.resetTutorSize, 400));
+            this.listenTo(Adapt, 'device:resize', _.debounce(this.resetTutorSize, 100));
         },
+
 
         events: {
             'click .tutor-done': 'onTutorCloseClick',
@@ -37,7 +43,7 @@ define(function(require) {
             this.$el.html(template(data)).appendTo('#wrapper');
             this.$('.tutor').css({display: 'block', opacity: 0});
 
-            if(this.model.get('shouldShowMedia') && this.model.get('_feedback')._graphic) {
+            if(this.model.get('canShowMedia') && this.model.get('_feedback')._graphic) {
                 this.$('.tutor-graphic').imageready(_.bind(function() {
                     _.defer(_.bind(function() {
                         this.showTutor();
@@ -56,11 +62,8 @@ define(function(require) {
 
         postRender: function() {
             $(document).on('keyup', _.bind(this.onKeyUp, this));
-            var feedback = this.model.get('_feedback');
-            if (this.model.get('shouldShowMedia') && (feedback._graphic || feedback._media)) {
-                if(feedback._media) {
-                    this.setupPlayer();
-                }
+            if (this.model.get('canShowMedia') && this.model.get('_feedback')._media) {
+                this.setupPlayer();
             }
         },
 
@@ -74,31 +77,34 @@ define(function(require) {
             this.$('video').mediaelementplayer(modelOptions);
 
             if (this.model.get('_feedback')._media.source) {
-                this.$('.media-widget').addClass('external-source');
+                this.$('.tutor-media').addClass('external-source');
             }
         },
 
         resetTutorSize: function() {
             this.$('.tutor').removeAttr('style');
             this.resizeTutor(true);
+        },
 
-            var feedback = this.model.get('_feedback');
-
-            if(this.model.get('shouldShowMedia')) {
-                if(feedback._media) {
-                    this.$('video').width(this.$('.tutor-media').width());
-                }
-            }
-
+        resizeTutor: function(noAnimation) {
             if (Adapt.device.screenSize == 'large') {
                 this.$('.tutor-inner').removeClass('small-screen');
             } else {
                 this.$('.tutor-inner').addClass('small-screen');
             }
 
-        },
+            var feedback = this.model.get('_feedback');
+            if (Adapt.device.screenSize == 'large' && this.model.get('canShowMedia') && (feedback._graphic || feedback._media)) {
+                if(feedback._media) {
+                    this.$('video').width(this.$('.tutor-media').width());
+                }
 
-        resizeTutor: function(noAnimation) {
+                var mediaWidth = this.$('.media-container').width();
+                var bodyWidth = this.$('.tutor-inner').width() - (this.$('.media-container').width() + 5);
+                this.$('.tutor-body').width(bodyWidth);
+            } else {
+                this.$('.tutor-body').css('width', '100%');
+            }
 
             var windowHeight = $(window).height();
             var tutorHeight = this.$('.tutor').height();
@@ -121,15 +127,7 @@ define(function(require) {
                     'margin-top': -(tutorHeight / 2), 'opacity': 1
                 }, animationSpeed);
             }
-
-            if (Adapt.device.screenSize == 'large' && this.model.get('shouldShowMedia')) {
-                var width = this.$('.tutor-inner').width() - 595;
-                this.$('.tutor-body').width(width);
-            } else {
-                this.$('.tutor-body').css('width', '100%');
-            }
         },
-
 
         showTutor: function() {
             this.$('.tutor').show();
@@ -143,7 +141,7 @@ define(function(require) {
         },
 
         closeTutor: function() {
-            if (this.model.get('_feedback')._media) {
+            if (this.model.get('_feedback')._media && this.model.get('canShowMedia')) {
                 if ($("html").is(".ie8")) {
                     var obj = this.$("object")[0];
                     obj.style.display = "none"
@@ -173,6 +171,37 @@ define(function(require) {
 
         onPlayerReady: function (mediaElement, domObject) {
             this.mediaElement = mediaElement;
+        },
+
+        updateFeedback:function(){
+            var feedbackTitle, feedbackMessage;
+            var feedback = this.model.get('_feedback');
+
+            if (this.model.get('_isCorrect')) {
+                feedbackTitle = this.model.get('_feedback').correct.title;
+                feedbackMessage = this.model.get('_feedback').correct.body;
+            } else {
+                feedbackMessage = this.model.get('_feedback').body;
+
+                if (this.model.get('_isAtLeastOneCorrectSelection')) {
+                    if (this.model.get('_attemptsLeft') === 0 || !this.model.get('_feedback')._partlyCorrect.notFinal) {
+                        feedbackTitle = this.model.get('_feedback')._partlyCorrect.final.title;
+                    } else {
+                        feedbackTitle = this.model.get('_feedback')._partlyCorrect.notFinal.title;
+                    }
+                } else {
+                    if (this.model.get('_attemptsLeft') === 0 || !this.model.get('_feedback')._incorrect.notFinal) {
+                        feedbackTitle = this.model.get('_feedback')._incorrect.final.title;
+                    } else {
+                        feedbackTitle = this.model.get('_feedback')._incorrect.final.title;
+                    }
+                }
+            }
+
+            this.model.set({
+                feedbackTitle: feedbackTitle,
+                feedbackMessage: feedbackMessage
+            });
         }
 
     });
