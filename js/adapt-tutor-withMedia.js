@@ -182,18 +182,19 @@ define(function(require) {
                 feedbackMessage = this.model.get('_feedback').correct.body;
             } else {
                 feedbackMessage = this.model.get('_feedback').body;
-
                 if (this.model.get('_isAtLeastOneCorrectSelection')) {
                     if (this.model.get('_attemptsLeft') === 0 || !this.model.get('_feedback')._partlyCorrect.notFinal) {
                         feedbackTitle = this.model.get('_feedback')._partlyCorrect.final.title;
                     } else {
                         feedbackTitle = this.model.get('_feedback')._partlyCorrect.notFinal.title;
+                        feedbackMessage = '';
                     }
                 } else {
                     if (this.model.get('_attemptsLeft') === 0 || !this.model.get('_feedback')._incorrect.notFinal) {
                         feedbackTitle = this.model.get('_feedback')._incorrect.final.title;
                     } else {
-                        feedbackTitle = this.model.get('_feedback')._incorrect.final.title;
+                        feedbackTitle = this.model.get('_feedback')._incorrect.notFinal.title;
+                        feedbackMessage = '';
                     }
                 }
             }
