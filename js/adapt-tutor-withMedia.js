@@ -2,17 +2,17 @@
  * adapt-tutor-withMedia
  * Copyright (C) 2015 Bombardier Inc. (www.batraining.com)
  * https://github.com/BATraining/adapt-tutor-withMedia/blob/master/LICENSE
- * 
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
@@ -186,26 +186,54 @@ define(function(require) {
 
         updateFeedback:function(){
             var feedbackTitle, feedbackMessage;
-            var feedback = this.model.get('_feedback');
+            var feedbackObj = this.model.get('_feedback');
+
+            if (feedbackObj._default.title !== undefined) {
+                feedbackTitle = feedbackObj._default.title;
+            }
+            if (feedbackObj._default.body !== undefined) {
+                feedbackMessage = feedbackObj._default.body;
+            }
 
             if (this.model.get('_isCorrect')) {
-                feedbackTitle = this.model.get('_feedback').correct.title;
-                feedbackMessage = this.model.get('_feedback').correct.body;
+                if (feedbackObj.correct.title !== undefined) {
+                    feedbackTitle = feedbackObj.correct.title;
+                }
+                if (feedbackObj.correct.body !== undefined) {
+                    feedbackMessage = feedbackObj.correct.body;
+                }
             } else {
-                feedbackMessage = this.model.get('_feedback').body;
                 if (this.model.get('_isAtLeastOneCorrectSelection')) {
-                    if (this.model.get('_attemptsLeft') === 0 || !this.model.get('_feedback')._partlyCorrect.notFinal) {
-                        feedbackTitle = this.model.get('_feedback')._partlyCorrect.final.title;
+                    if (this.model.get('_attemptsLeft') === 0 || !feedbackObj._partlyCorrect.notFinal) {
+                        if (feedbackObj._partlyCorrect.final.title !== undefined) {
+                            feedbackTitle = feedbackObj._partlyCorrect.final.title;
+                        }
+                        if (feedbackObj._partlyCorrect.final.body !== undefined) {
+                            feedbackMessage = feedbackObj._partlyCorrect.final.body;
+                        }
                     } else {
-                        feedbackTitle = this.model.get('_feedback')._partlyCorrect.notFinal.title;
-                        feedbackMessage = '';
+                        if (feedbackObj._partlyCorrect.notFinal.title !== undefined) {
+                            feedbackTitle = feedbackObj._partlyCorrect.notFinal.title;
+                        }
+                        if (feedbackObj._partlyCorrect.notFinal.body !== undefined) {
+                            feedbackMessage = feedbackObj._partlyCorrect.notFinal.body;
+                        }
                     }
                 } else {
-                    if (this.model.get('_attemptsLeft') === 0 || !this.model.get('_feedback')._incorrect.notFinal) {
-                        feedbackTitle = this.model.get('_feedback')._incorrect.final.title;
+                    if (this.model.get('_attemptsLeft') === 0 || !feedbackObj._incorrect.notFinal) {
+                        if (feedbackObj._incorrect.final.title !== undefined) {
+                            feedbackTitle = feedbackObj._incorrect.final.title;
+                        }
+                        if (feedbackObj._incorrect.final.body !== undefined) {
+                            feedbackMessage = feedbackObj._incorrect.final.body;
+                        }
                     } else {
-                        feedbackTitle = this.model.get('_feedback')._incorrect.notFinal.title;
-                        feedbackMessage = '';
+                        if (feedbackObj._incorrect.notFinal.title !== undefined) {
+                            feedbackTitle = feedbackObj._incorrect.notFinal.title;
+                        }
+                        if (feedbackObj._incorrect.notFinal.body !== undefined) {
+                            feedbackMessage = feedbackObj._incorrect.notFinal.body;
+                        }
                     }
                 }
             }

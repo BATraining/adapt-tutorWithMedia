@@ -1,0 +1,33 @@
+{
+  "_feedback": {
+    "correct": {
+      "body": "You have the right answer."
+    },
+    "_incorrect": {
+      "notFinal": {
+        "title": "Incorrect, Try Again",
+        "body": ""
+      },
+      "final": {
+        "title": "Incorrect"
+      }
+    },
+    "_partlyCorrect": {
+      "notFinal": {
+        "title": "Partially Correct, Try Again"
+      },
+      "final": {
+        "title": "Partially Correct",
+        "body": "No more tries."
+      }
+    },
+    "_default": {
+      "title": "This should show for correct because it doesn't have a title attribute defined.",
+      "body": "This should show for final incorrect and notFinal partiallyCorrect because they don't have a body attribute defined."
+    },
+    "_graphic": {
+      "src": "course/en/images/html5.png",
+      "alt": "HTML5 graphic"
+    }
+  }
+}
